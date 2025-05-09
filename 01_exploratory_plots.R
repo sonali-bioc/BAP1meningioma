@@ -43,3 +43,49 @@ plot(hc)
 print(m1)
 print(p1)
 dev.off()
+
+
+# boxplots 
+
+lst = list(c("ERBB2", "ERBB3", "NRG3"),
+            c("FGFR2", "FGF1", "FGF14", "FGF17", "FGF18"),  
+            c("NTRK1", "NGF", "BDNF", "NTF3"), 
+            c("WNT3A", "WNT10A", "WNT10B", "WNT11", "WNT16"),# "WNT8B", 
+           c("NOTCH1", "NOTCH2"))
+
+
+library(reshape2)
+pdf("boxplot_gene_families_10_24_2024.pdf")
+l1 = lapply(lst, function(mygoi){
+    mydf = norm_data[mygoi, ]
+    ggdf2 = melt(mydf)
+    ggdf2$group = unlist(lapply(sampleinfo$Group, function(x) rep(x, length(mygoi))) )
+    ggdf2$Var1  = factor(ggdf2$Var1, levels = mygoi)
+    
+    p1 = ggplot(ggdf2, aes(x=Var1, y=value,  fill=group)) +
+        geom_boxplot() +
+        ylab("VST counts per gene") + xlab("") +
+        ggtitle("") + theme_bw() + 
+        theme(
+            legend.text=element_text(size=12),
+            legend.position ='bottom',
+            legend.justification = 'left',
+            legend.spacing.y = unit(0.5, 'cm'),
+            axis.title=element_text(size=12),
+            axis.text=element_text(size=12), 
+            axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+    print(p1)
+})
+dev.off()
+
+
+goi_lst = list(c("ERBB2", "ERBB3", "NRG3"),
+           c("FGFR2", "FGF1", "FGF14", "FGF17", "FGF18"),  #"FGF7", 
+           c("NTRK1", "NGF", "BDNF", "NTF3"), 
+           c("PDGFA", "PDGFD"), 
+           c("TGFBR3", "TGFA"), #"TGFB3", 
+           c("RET", "GFRA2", "GFRA4", "GDNF"), 
+           c("VEGFA", "VEGFC"), 
+           c("WNT3A", "WNT10A", "WNT10B", "WNT11", "WNT16"),# "WNT8B", 
+           c("NOTCH1", "NOTCH2"))
+                         
